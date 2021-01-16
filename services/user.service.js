@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/user.model')
 const CryptoService = require('./crypto')
 const config = require('../config/index').jwt
+const moment = require('moment')
 
 class UserService {
   async login({ username, password }) {
@@ -31,24 +32,44 @@ class UserService {
 
   getToken(user) {
     return {
-      token: jwt.sign(
-        {
-          username: user.username,
-          name: user.fullName.split(' ')[0],
-          id: user.id || user._id
-        },
-        config.secret
-      )
+      token: jwt.sign(this.getTokenProps(user), config.secret)
     }
   }
 
-  getUser(username) {
-    return User.findOne({
-      $or: [{ username }, { email: username }]
-    }).select('username fullName password email birthday').lean()
+  getTokenProps(user) {
+    return {
+      username: user.username,
+      name: user.fullName.split(' ')[0],
+      fullName: user.fullName,
+      email: user.email,
+      birthday: user.birthday,
+      id: user.id || user._id
+    }
   }
 
-  update({ username, password, email, fullName, birthday }) {}
+  async getUser(username, showPassword = false) {
+    const user = await User.findOne({
+      $or: [{ username }, { email: username }]
+    })
+      .select('username fullName password email birthday')
+      .lean()
+
+    return { ...user, birthday: moment.utc(user.birthday).format('YYYY-MM-DD') }
+  }
+
+  async update(auth, { username, email, fullName, birthday }) {
+    if (!username) username = auth.username
+
+    const userExists = await User.findOne({ username: auth.username })
+    if (!userExists) throw { code: 401, message: 'Invalid user' }
+
+    await User.updateOne(
+      { username: auth.username },
+      { username, email, fullName, birthday: moment.utc(birthday).format() }
+    )
+
+    return this.getTokenProps(await this.getUser(username))
+  }
 }
 
 module.exports = new UserService()

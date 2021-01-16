@@ -19,6 +19,15 @@ class UserController {
 			next(error)
 		}
 	}
+
+	async updateUserInfo(req, res, next) {
+		try {
+			const result = await UserService.update(req.auth, req.body)
+			res.status(200).json(result)
+		} catch (error) {
+			next(error)
+		}
+	}	
 }
 
 module.exports = new UserController()

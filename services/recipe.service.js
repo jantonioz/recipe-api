@@ -34,13 +34,14 @@ class RecipeService {
     return this.calcRateAvg(recipe)
   }
 
-  async create({ title, body, tags, level }, auth) {
+  async create({ title, body, tags, level, ingredients }, auth) {
     const { id } = auth
     const recipe = await Recipe.create({
       title,
       body,
       tags,
       level,
+      ingredients,
       author: id,
       rates: []
     })
@@ -48,16 +49,16 @@ class RecipeService {
     return recipe
   }
 
-  async update({ id, title, body, tags, level }, auth) {
+  async update({ id, title, body, tags, level, ingredients }, auth) {
     const result = await Recipe.updateOne(
       { _id: id, author: auth.id },
-      { title, body, tags, level }
+      { title, body, tags, level, ingredients }
     )
     const recipe = await Recipe.findOne({ _id: id }).populate('author').lean()
     return { ...recipe, ...result }
   }
 
-  async delete({ id }, author) {
+  async delete(id, auth) {
     const result = await Recipe.updateOne(
       { _id: id, author: auth.id },
       { visible: false }
