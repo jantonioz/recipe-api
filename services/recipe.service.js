@@ -34,7 +34,7 @@ class RecipeService {
     return this.calcRateAvg(recipe)
   }
 
-  async create({ title, body, tags, level, ingredients }, auth) {
+  async create({ title, body, tags, level, ingredients, previews }, auth) {
     const { id } = auth
     const recipe = await Recipe.create({
       title,
@@ -43,16 +43,17 @@ class RecipeService {
       level,
       ingredients,
       author: id,
-      rates: []
+      rates: [],
+      previews
     })
     recipe.populate('author').execPopulate()
     return recipe
   }
 
-  async update({ id, title, body, tags, level, ingredients }, auth) {
+  async update({ id, title, body, tags, level, ingredients, previews }, auth) {
     const result = await Recipe.updateOne(
       { _id: id, author: auth.id },
-      { title, body, tags, level, ingredients }
+      { title, body, tags, level, ingredients, previews }
     )
     const recipe = await Recipe.findOne({ _id: id }).populate('author').lean()
     return { ...recipe, ...result }
