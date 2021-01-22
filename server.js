@@ -19,10 +19,11 @@ app.use(
 		requestProperty: 'auth',
 		algorithms: ['HS256'],
 	}).unless({
-		path: ['/api/login', '/api/register'],
-	}),
-	require('./routers')
+		path: ['/api/login', '/api/register', '/api/previews'],
+	})
 )
+
+app.use('/api', require('./routers'))
 
 async function start() {
 	await database.getDb()

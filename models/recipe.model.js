@@ -14,7 +14,8 @@ const RecipeSchema = new mongoose.Schema(
       index: true
     },
     visible: { type: Boolean, default: true, select: false },
-    rates: [{ type: mongoose.Types.ObjectId, ref: 'RecipeRatings' }]
+    rates: [{ type: mongoose.Types.ObjectId, ref: 'RecipeRatings' }],
+    previews: [{ type: String }]
   },
   { timestamps: true }
 )
