@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema(
 		password: { type: String, required: true, select: false },
 		fullName: { type: String, required: true },
 		birthday: { type: Date, required: false },
+		isRestaurant: { type: Boolean, required: true },
 	},
 	{ timestamps: true, _id: 'id' }
 )

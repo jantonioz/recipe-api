@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const UserRouter = require('./user.router')
-const RecipeRouter = require('./recipe.router')
+const RecipeRouter = require('./menuitem.router')
 const PreviewRouter = require('./preview.router')
 
 router.use(UserRouter)
