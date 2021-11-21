@@ -36,6 +36,8 @@ class RecipeService {
 
   async create({ title, body, tags, level, ingredients, previews }, auth) {
     const { id } = auth
+    // check if token belongs to a user with isRestaurant as true
+    
     const recipe = await Recipe.create({
       title,
       body,
