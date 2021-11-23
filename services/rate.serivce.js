@@ -1,11 +1,11 @@
-const menuitemRating = require('../models/menuitem_rating.model')
-const menuitem = require('../models/menuitem.model')
+const MenuitemRating = require('../models/menuitem_rating.model')
+const Menuitem = require('../models/menuitem.model')
 const RacipeService = require('./menuitem.service')
 const menuitemService = require('./menuitem.service')
 
 class RateService {
   async rate({ id, rate, comment }, auth) {
-    const menuitem = await menuitem.findOne({ _id: id }).populate('rates').lean()
+    const menuitem = await Menuitem.findOne({ _id: id }).populate('rates').lean()
     if (!menuitem) throw { code: 400, message: 'menuitem not exists' }
 
     let prevRate = await this.getRate(menuitem, auth.id)
@@ -21,12 +21,12 @@ class RateService {
   async getRate(menuitem, author) {
     const found = menuitem.rates.find(r => r.author.equals(author))
     if (!found) return false
-    const rate = await menuitemRating.findOne(found).exec()
+    const rate = await MenuitemRating.findOne(found).exec()
     return rate
   }
 
   async create({ id, rate, comment }, auth) {
-    const menuitemRate = await menuitemRating.create({
+    const menuitemRate = await MenuitemRating.create({
       menuitem: id,
       author: auth.id,
       rate,
@@ -40,7 +40,7 @@ class RateService {
 
   async update(prevRate, { rate, comment }, auth) {
     console.log(prevRate._id)
-    const result = await menuitemRating.updateOne(
+    const result = await MenuitemRating.updateOne(
       {
         _id: prevRate._id.toString(),
         author: auth.id

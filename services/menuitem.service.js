@@ -1,9 +1,9 @@
-const menuitem = require('../models/menuitem.model')
-const menuitemRating = require('../models/menuitem_rating.model')
+const Menuitem = require('../models/menuitem.model')
+const MenuitemRating = require('../models/menuitem_rating.model')
 
-class menuitemService {
+class MenuitemService {
   async get(filters) {
-    const menuitems = await menuitem.find({ ...filters, visible: true })
+    const menuitems = await Menuitem.find({ ...filters, visible: true })
       .populate('author')
       .populate({ path: 'rates', select: 'rate' })
       .lean()
@@ -20,7 +20,7 @@ class menuitemService {
   }
 
   async getOne({ id }) {
-    const menuitem = await menuitem.findOne({ _id: id, visible: true })
+    const menuitem = await Menuitem.findOne({ _id: id, visible: true })
       .populate('author')
       .populate('rates')
       .populate({
@@ -38,7 +38,7 @@ class menuitemService {
     const { id } = auth
     // check if token belongs to a user with isRestaurant as true
     
-    const menuitem = await menuitem.create({
+    const menuitem = await Menuitem.create({
       title,
       body,
       tags,
@@ -53,22 +53,22 @@ class menuitemService {
   }
 
   async update({ id, title, body, tags, level, ingredients, previews }, auth) {
-    const result = await menuitem.updateOne(
+    const result = await Menuitem.updateOne(
       { _id: id, author: auth.id },
       { title, body, tags, level, ingredients, previews }
     )
-    const menuitem = await menuitem.findOne({ _id: id }).populate('author').lean()
+    const menuitem = await Menuitem.findOne({ _id: id }).populate('author').lean()
     return { ...menuitem, ...result }
   }
 
   async delete(id, auth) {
-    const result = await menuitem.updateOne(
+    const result = await Menuitem.updateOne(
       { _id: id, author: auth.id },
       { visible: false }
     )
-    const menuitem = await menuitem.findOne({ _id: id }).populate('author').lean()
+    const menuitem = await Menuitem.findOne({ _id: id }).populate('author').lean()
     return { ...menuitem, ...result }
   }
 }
 
-module.exports = new menuitemService()
+module.exports = new MenuitemService()
