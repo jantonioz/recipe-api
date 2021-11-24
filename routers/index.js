@@ -1,10 +1,10 @@
 const router = require('express').Router()
 const UserRouter = require('./user.router')
-const RecipeRouter = require('./menuitem.router')
+const menuitemRouter = require('./menuitem.router')
 const PreviewRouter = require('./preview.router')
 
 router.use(UserRouter)
-router.use(RecipeRouter)
+router.use(menuitemRouter)
 router.use(PreviewRouter)
 
 router.use((err, req, res, next) => {

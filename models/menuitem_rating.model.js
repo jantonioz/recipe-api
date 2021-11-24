@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const RecipeRatingSchema = new mongoose.Schema(
+const MenuitemRatingSchema = new mongoose.Schema(
   {
     author: {
       type: mongoose.Types.ObjectId,
@@ -8,7 +8,7 @@ const RecipeRatingSchema = new mongoose.Schema(
       required: true,
       index: true
     },
-    recipe: {
+    menuitem: {
       type: mongoose.Types.ObjectId,
       ref: 'Users',
       required: true,
@@ -20,4 +20,4 @@ const RecipeRatingSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-module.exports = mongoose.model('RecipeRatings', RecipeRatingSchema)
+module.exports = mongoose.model('MenuitemRatings', MenuitemRatingSchema)
