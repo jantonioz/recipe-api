@@ -1,6 +1,11 @@
 const crypto = require('bcryptjs')
 
 class CryptoService {
+	/**
+	 * 
+	 * @param {String} str 
+	 * @returns {Promise<String>}
+	 */
 	encrypt(str) {
 		return new Promise((resolve, reject) => {
 			crypto.genSalt(10, (err, salt) => {

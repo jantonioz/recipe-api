@@ -57,6 +57,14 @@ class UserService {
     return { ...user, birthday: moment.utc(user.birthday).format('YYYY-MM-DD') }
   }
 
+  async getRestaurants() {
+    const restaurants = await User.find({ isRestaurant: true })
+      .select('username fullName')
+      .lean()
+
+    return restaurants;
+  }
+
   async update(auth, { username, email, fullName, birthday }) {
     if (!username) username = auth.username
 
