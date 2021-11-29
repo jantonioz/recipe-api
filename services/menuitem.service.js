@@ -1,14 +1,22 @@
-const Menuitem = require('../models/menuitem.model')
+const MenuItem = require('../models/menuitem.model')
 const MenuitemRating = require('../models/menuitem_rating.model')
 
 class MenuitemService {
   async get(filters) {
-    const menuitems = await Menuitem.find({ ...filters, visible: true })
+    const menuitems = await MenuItem.find({ ...filters, visible: true })
       .populate('author')
       .populate({ path: 'rates', select: 'rate' })
       .lean()
 
     return menuitems.map(this.calcRateAvg)
+  }
+
+  async getByAuthor(authorId) {
+    const menuItems = await MenuItem.find({ author: authorId })
+      .populate({ path: 'rates', select: 'rates' })
+      .lean()
+      .exec()
+    return menuItems
   }
 
   calcRateAvg(menuitem) {
@@ -20,7 +28,7 @@ class MenuitemService {
   }
 
   async getOne({ id }) {
-    const menuitem = await Menuitem.findOne({ _id: id, visible: true })
+    const menuitem = await MenuItem.findOne({ _id: id, visible: true })
       .populate('author')
       .populate('rates')
       .populate({
@@ -37,8 +45,8 @@ class MenuitemService {
   async create({ title, body, tags, level, ingredients, previews }, auth) {
     const { id } = auth
     // check if token belongs to a user with isRestaurant as true
-    
-    const menuitem = await Menuitem.create({
+
+    const menuitem = await MenuItem.create({
       title,
       body,
       tags,
@@ -53,20 +61,24 @@ class MenuitemService {
   }
 
   async update({ id, title, body, tags, level, ingredients, previews }, auth) {
-    const result = await Menuitem.updateOne(
+    const result = await MenuItem.updateOne(
       { _id: id, author: auth.id },
       { title, body, tags, level, ingredients, previews }
     )
-    const menuitem = await Menuitem.findOne({ _id: id }).populate('author').lean()
+    const menuitem = await MenuItem.findOne({ _id: id })
+      .populate('author')
+      .lean()
     return { ...menuitem, ...result }
   }
 
   async delete(id, auth) {
-    const result = await Menuitem.updateOne(
+    const result = await MenuItem.updateOne(
       { _id: id, author: auth.id },
       { visible: false }
     )
-    const menuitem = await Menuitem.findOne({ _id: id }).populate('author').lean()
+    const menuitem = await MenuItem.findOne({ _id: id })
+      .populate('author')
+      .lean()
     return { ...menuitem, ...result }
   }
 }
