@@ -1,10 +1,10 @@
-const menuitemService = require('../services/menuitem.service')
+const MenuitemService = require('../services/menuitem.service')
 const RateService = require('../services/rate.serivce')
 
-class menuitemController {
+class MenuitemController {
   async get(req, res, next) {
     try {
-      const result = await menuitemService.get(req.query)
+      const result = await MenuitemService.get(req.query)
       res.status(200).json({ menuitems: result })
     } catch (error) {
       next(error)
@@ -13,7 +13,7 @@ class menuitemController {
 
   async getOne(req, res, next) {
     try {
-      const result = await menuitemService.getOne(req.params)
+      const result = await MenuitemService.getOne(req.params)
       res.status(200).json({ menuitem: result })
     } catch (error) {
       next(error)
@@ -22,7 +22,7 @@ class menuitemController {
 
   async create(req, res, next) {
     try {
-      const menuitem = await menuitemService.create(req.body, req.auth)
+      const menuitem = await MenuitemService.create(req.body, req.auth)
       res.status(201).json({ menuitem })
     } catch (error) {
       next(error)
@@ -43,7 +43,7 @@ class menuitemController {
 
   async update(req, res, next) {
     try {
-      const menuitem = await menuitemService.update(
+      const menuitem = await MenuitemService.update(
         { id: req.params.id, ...req.body },
         req.auth
       )
@@ -55,7 +55,7 @@ class menuitemController {
 
   async delete(req, res, next) {
     try {
-      const menuitem = await menuitemService.delete(req.params.id, req.auth)
+      const menuitem = await MenuitemService.delete(req.params.id, req.auth)
       res.status(202).json({ menuitem })
     } catch (error) {
       next(error)
@@ -63,4 +63,4 @@ class menuitemController {
   }
 }
 
-module.exports = new menuitemController()
+module.exports = new MenuitemController()
