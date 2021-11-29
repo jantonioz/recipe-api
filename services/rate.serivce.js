@@ -32,7 +32,7 @@ class RateService {
       rate,
       comment
     })
-    await menuitem.updateOne(
+    await Menuitem.updateOne(
       { _id: id },
       { $addToSet: { rates: menuitemRate._id } }
     )
