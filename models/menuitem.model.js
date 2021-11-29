@@ -14,7 +14,7 @@ const MenuitemSchema = new mongoose.Schema(
       index: true
     },
     visible: { type: Boolean, default: true, select: false },
-    rates: [{ type: mongoose.Types.ObjectId, ref: 'menuitemRatings' }],
+    rates: [{ type: mongoose.Types.ObjectId, ref: 'MenuitemRatings' }],
     previews: [{ type: String }]
   },
   { timestamps: true }
