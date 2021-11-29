@@ -13,24 +13,31 @@ app.use(helmet())
 app.use(cors())
 
 app.use(
-	config.api.base,
-	jwt({
-		secret: config.jwt.secret,
-		requestProperty: 'auth',
-		algorithms: ['HS256'],
-	}).unless({
-		path: ['/api/login', '/api/register', '/api/previews'],
-	})
+  config.api.base,
+  jwt({
+    secret: config.jwt.secret,
+    requestProperty: 'auth',
+    algorithms: ['HS256']
+  }).unless({
+    path: ['login', 'register', 'register/restaurant', 'previews'].map(
+      r => `${config.api.base}/${r}`
+    )
+  }),
+  function (err, req, res, next) {
+    if (err && err.status > 300)
+      return res.status(err.status).json({ message: err.message })
+    next()
+  }
 )
 
 app.use('/api', require('./routers'))
 
 async function start() {
-	await database.getDb()
-	app.listen(config.api.port, () => {
-		const port = config.api.port
-		console.log(new Date(), `API running on http://localhost:${port}`)
-	})
+  await database.getDb()
+  app.listen(config.api.port, () => {
+    const port = config.api.port
+    console.log(new Date(), `API running on http://localhost:${port}`)
+  })
 }
 
 start()
