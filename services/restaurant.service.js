@@ -29,6 +29,11 @@ class RestaurantService {
     restaurantResult.save()
     return { ...restaurantResult, password: undefined }
   }
+
+  async getMenu({ name, id }) {
+    const restaurantMenu = await menuitemService.getByAuthor({name, id})
+    return restaurantMenu
+  }
 }
 
 module.exports = new RestaurantService()

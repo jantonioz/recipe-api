@@ -32,6 +32,19 @@ class RestaurantController {
       next(error)
     }
   }
+
+  async getMenu(req, res, next) {
+    try {
+      const menu = await RestaurantService.getMenu({
+        ...req.body,
+        ...req.query,
+        ...req.params
+      })
+      res.status(200).json(menu)
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 module.exports = new RestaurantController()

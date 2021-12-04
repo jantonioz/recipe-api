@@ -19,6 +19,16 @@ class MenuitemService {
     return menuItems
   }
 
+  async searchByAuthor({ authorId, name, id }) {
+    const menuitems = await MenuItem.find({ author: authorId, $or: [
+      { title: { $regex: `.*${name}.*`, $options: 'i' } },
+      { tags: { $regex: `.*${name}.*`, $options: 'i' } },
+      { ingredients: { $regex: `.*${name}.*`, $options: 'i' } },
+      { body: { $regex: `.*${name}.*`, $options: 'i' } },
+      { _id: id }
+    ]})
+  }
+
   calcRateAvg(menuitem) {
     if (!menuitem.rates || !menuitem.rates.length) menuitem.rates = []
     const avg =
