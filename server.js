@@ -12,6 +12,13 @@ app.use(bodyParser.json())
 app.use(helmet())
 app.use(cors())
 
+app.get(config.api.base + '/content/previews/:id', (req, res, next) => {
+  const fileName = req.params.id
+  const location = `${__dirname}/uploads/${fileName}`
+  res.sendFile(location)
+})
+
+
 app.use(
   config.api.base,
   jwt({

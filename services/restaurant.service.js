@@ -15,9 +15,11 @@ class RestaurantService {
         { _id: id },
         { 'restaurantInfo.name': { $regex: '.*' + name + '.*' } }
       ]
-    }).lean()
-
-    const menusByRestaurant = await menuitemService.getByAuthor(restaurant._id)
+    }).lean().exec()
+    const authorId = restaurant._id.toString()
+    const menusByRestaurant = await menuitemService.getByAuthor(
+      authorId
+    )
 
     return { ...restaurant, menuItems: menusByRestaurant }
   }
@@ -31,7 +33,7 @@ class RestaurantService {
   }
 
   async getMenu({ name, id }) {
-    const restaurantMenu = await menuitemService.getByAuthor({name, id})
+    const restaurantMenu = await menuitemService.getByAuthor({ name, id })
     return restaurantMenu
   }
 }

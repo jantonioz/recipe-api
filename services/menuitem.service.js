@@ -12,21 +12,24 @@ class MenuitemService {
   }
 
   async getByAuthor(authorId) {
-    const menuItems = await MenuItem.find({ author: authorId })
+    const menuItems = await MenuItem.find({ author: authorId, visible: true })
       .populate({ path: 'rates', select: 'rates' })
       .lean()
       .exec()
-    return menuItems
+    return menuItems.map(this.calcRateAvg)
   }
 
   async searchByAuthor({ authorId, name, id }) {
-    const menuitems = await MenuItem.find({ author: authorId, $or: [
-      { title: { $regex: `.*${name}.*`, $options: 'i' } },
-      { tags: { $regex: `.*${name}.*`, $options: 'i' } },
-      { ingredients: { $regex: `.*${name}.*`, $options: 'i' } },
-      { body: { $regex: `.*${name}.*`, $options: 'i' } },
-      { _id: id }
-    ]})
+    const menuitems = await MenuItem.find({
+      author: authorId,
+      $or: [
+        { title: { $regex: `.*${name}.*`, $options: 'i' } },
+        { tags: { $regex: `.*${name}.*`, $options: 'i' } },
+        { ingredients: { $regex: `.*${name}.*`, $options: 'i' } },
+        { body: { $regex: `.*${name}.*`, $options: 'i' } },
+        { _id: id }
+      ]
+    })
   }
 
   calcRateAvg(menuitem) {
@@ -34,7 +37,10 @@ class MenuitemService {
     const avg =
       menuitem.rates.reduce((total, el) => total + el.rate, 0) /
       menuitem.rates.length
-    return { ...menuitem, rateAvg: avg || 0 }
+    return {
+      ...menuitem,
+      rateAvg: avg || 0
+    }
   }
 
   async getOne({ id }) {

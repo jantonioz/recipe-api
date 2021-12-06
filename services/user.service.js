@@ -24,7 +24,7 @@ class UserService {
       username,
       password: hash,
       email,
-      fullName
+      fullName,
     })
     const user = await this.getUser(username)
     return this.getToken({ ...user, username })
@@ -43,7 +43,8 @@ class UserService {
       fullName: user.fullName,
       email: user.email,
       birthday: user.birthday,
-      id: user.id || user._id
+      id: user.id || user._id,
+      isRestaurant: user.isRestaurant,
     }
   }
 
@@ -51,7 +52,7 @@ class UserService {
     const user = await User.findOne({
       $or: [{ username }, { email: username }]
     })
-      .select('username fullName password email birthday')
+      .select('username fullName password email birthday isRestaurant')
       .lean()
 
     return { ...user, birthday: moment.utc(user.birthday).format('YYYY-MM-DD') }
